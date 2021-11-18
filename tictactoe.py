@@ -3,11 +3,13 @@ Tic Tac Toe Player
 """
 import numpy as np
 import math
+import random
 
 X = "X"
 O = "O"
 EMPTY = None
 
+visited = set()
 
 def initial_state():
 	"""
@@ -30,7 +32,6 @@ def player(board):
 		return X
 	else:
 		return O
-	#raise NotImplementedError
 
 
 def actions(board):
@@ -57,9 +58,7 @@ def winner(board):
 	"""
 	Returns the winner of the game, if there is one.
 	"""
-	if(checkWin(board) != 0):
-		return checkWin(board)
-	return 0
+	return checkWin(board)
 
 
 def terminal(board):
@@ -77,9 +76,10 @@ def utility(board):
 	"""
 	Returns 1 if X has won the game, -1 if O has won, 0 otherwise.
 	"""
-	if(winner(board) == X):
+	w = winner(board)
+	if(w == X):
 		return 1
-	elif(winner(board) == O):
+	elif(w == O):
 		return -1
 	else:
 		return 0
@@ -88,6 +88,11 @@ def minimax(board):
 	"""
 	Returns the optimal action for the current player on the board.
 	"""
+	# hard-code the first move with the highest chance of winning
+	corners = [(0,0),(0,2),(2,0),(2,2)]
+	print("-----------------------------------")
+	if (len(actions(board)) == 9):
+		return random.choice(corners)
 	if(player(board) == X):
 		#print("Maximizing Player Turn")
 		return maxVal(board)[1]
@@ -95,8 +100,8 @@ def minimax(board):
 		#print("Minimizing Player Turn")
 		return minVal(board)[1]
 
-def maxVal(board):
-	"""
+def maxVal(board, alpha=-1e99, beta=1e99, depth=0):
+	"""`
 	Simulates maximizing player
 	"""
 	if(terminal(board)):
@@ -105,33 +110,45 @@ def maxVal(board):
 	v = -99
 	bestAction = (-1,-1)
 	for action in actions(board):
-		 actionVal = minVal(result(board,action))[0]
-		 if(actionVal > v):
-		 	v = actionVal
-		 	bestAction = action
+		res = result(board, action)
+		actionVal = minVal(res, alpha, beta, 1)[0]
+		if (depth == 0):
+			print("Placing at",action,"is evalutated at",actionVal,"alpha:",alpha,"beta",beta)
+		if(actionVal > v):
+			v = actionVal
+			bestAction = action
+		alpha = max(alpha, actionVal)
+		if beta <= alpha:
+			print("breaking at",board)
+			break
 	return (v,bestAction)
 
-def minVal(board):
+def minVal(board, alpha=-1e99, beta=1e99, depth=0):
 	"""
 	Simulates minimizing player
 	"""
 	if(terminal(board)):
-		#print("Is terminal")
+		print(board, utility(board))
 		return (utility(board),(None, None))
 	v = 99
-	bestAction = (0,0)
+	bestAction = (-1,-1)
 	for action in actions(board):
-		actionVal = maxVal(result(board,action))[0]
+		res = result(board, action)
+		actionVal = maxVal(res, alpha, beta, 1)[0]
+		if (depth == 0):
 		if(actionVal < v):
 			v = actionVal
 			bestAction = action
+		beta = max(beta, actionVal)
+		if beta <= alpha:
+			break
 	return (v,bestAction)
 
 #terminal logic
 
 def checkRows(board):
 	for row in board:
-		if len(set(row)) == 1:
+		if len(set(row)) == 1 and row[0] is not None:
 			return row[0]
 	return None
 
@@ -149,9 +166,3 @@ def checkWin(board):
 		if result:
 			return result
 	return checkDiagonals(board)
-
-arr = [[X, O, O],
-			[O, X, X],
-			[X, X, O]]
-print(terminal(arr))
-print(minimax(arr))
