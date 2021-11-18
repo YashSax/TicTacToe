@@ -90,7 +90,6 @@ def minimax(board):
 	"""
 	# hard-code the first move with the highest chance of winning
 	corners = [(0,0),(0,2),(2,0),(2,2)]
-	print("-----------------------------------")
 	if (len(actions(board)) == 9):
 		return random.choice(corners)
 	if(player(board) == X):
@@ -112,14 +111,11 @@ def maxVal(board, alpha=-1e99, beta=1e99, depth=0):
 	for action in actions(board):
 		res = result(board, action)
 		actionVal = minVal(res, alpha, beta, 1)[0]
-		if (depth == 0):
-			print("Placing at",action,"is evalutated at",actionVal,"alpha:",alpha,"beta",beta)
 		if(actionVal > v):
 			v = actionVal
 			bestAction = action
 		alpha = max(alpha, actionVal)
 		if beta <= alpha:
-			print("breaking at",board)
 			break
 	return (v,bestAction)
 
@@ -128,14 +124,12 @@ def minVal(board, alpha=-1e99, beta=1e99, depth=0):
 	Simulates minimizing player
 	"""
 	if(terminal(board)):
-		print(board, utility(board))
 		return (utility(board),(None, None))
 	v = 99
 	bestAction = (-1,-1)
 	for action in actions(board):
 		res = result(board, action)
 		actionVal = maxVal(res, alpha, beta, 1)[0]
-		if (depth == 0):
 		if(actionVal < v):
 			v = actionVal
 			bestAction = action
