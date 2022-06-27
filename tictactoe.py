@@ -88,7 +88,6 @@ def minimax(board):
 	"""
 	Returns the optimal action for the current player on the board.
 	"""
-	# hard-code the first move with the highest chance of winning
 	corners = [(0,0),(0,2),(2,0),(2,2)]
 	if (len(actions(board)) == 9):
 		return random.choice(corners)
