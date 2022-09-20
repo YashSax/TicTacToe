@@ -1,5 +1,5 @@
 # TicTacToe
-A TicTacToe-playing AI created using Minimax and Alpha-Beta Pruning using Pygame\
+A TicTacToe-playing AI created using Minimax and Alpha-Beta Pruning using Pygame (Part of the CS50 AI course)\
 \
 ![Alt Text](https://media.giphy.com/media/AZVfhipHaDq1IAdpPZ/giphy.gif)\
 \
